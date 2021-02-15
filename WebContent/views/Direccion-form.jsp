@@ -38,7 +38,7 @@
       <td></td>
     </tr>
      
-					
+					<p>Usuario: ${user.first_name}</p>
       <td>   <br/><br/><input type="submit"  value="enviar"><br/><br/><br/></td>
     </tr>  
      

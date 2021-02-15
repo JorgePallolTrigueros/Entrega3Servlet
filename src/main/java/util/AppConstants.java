@@ -30,5 +30,5 @@ public class AppConstants {
 
 	public static final String ACTION_DELETE = "d";
 
-	
+
 }

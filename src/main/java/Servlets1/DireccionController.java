@@ -34,7 +34,7 @@ import modeloDAO.UsersDAOImplement;
 
 
 
-@WebServlet("/DireccionController")
+@WebServlet(name = "DireccionController", urlPatterns = { "/direccion" })
 public class DireccionController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -47,116 +47,83 @@ public class DireccionController extends HttpServlet {
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		String action = request.getParameter("action");
+		if (action == null || action.length() == 0) 
+			action = AppConstants.ACTION_RETRIEVE;
 		
-		if(action == null) {
-			action = "LIST";
-		}
-		
-		switch(action) {
-			
-			case "LIST":
-				listDireccion(request, response);
+		switch (action) {
+			case AppConstants.ACTION_RETRIEVE:
+				retrieve(request, response);
 				break;
-				
-			case "EDIT":
-				getSingleDireccion(request, response);
+			case AppConstants.ACTION_UPDATE:
+				update(request, response);
 				break;
-				
-			case "DELETE":
-				deleteDireccion(request, response);
+			case AppConstants.ACTION_DELETE:
+				delete(request, response);
 				break;
-				
-			case "VIEW":
-				
-				break;			
-				
 			default:
-				listDireccion(request, response);
-				break;
-				
+				retrieve(request, response);
 		}
 		
 	}
 
 
 
-	
-	
-	private void deleteDireccion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
-		if(DireccionDAO.delete(Long.parseLong(id))) {
-			request.setAttribute("NOTIFICATION", "Direccion Borrada!");
-		}
-		listDireccion(request, response);
-	}
-	
-	
-	
-	
-	
-	
-	
-
-	private void getSingleDireccion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		
-		String id = request.getParameter("id");
-		Direccion theDireccion = DireccionDAO.get(Long.parseLong(id));
-		request.setAttribute("direccion", theDireccion);
-		dispatcher = request.getRequestDispatcher("/views/Direccion-form.jsp");
-		dispatcher.forward(request, response);
+		DireccionDAO.delete(Long.valueOf(id));
+		retrieve(request, response);
 	}
 
 	
 	
 	
-	
-	private void listDireccion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		List<Direccion> theList = DireccionDAO.get();
-		request.setAttribute("list", theList);
+	private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String id = request.getParameter("id");
 		HttpSession session = request.getSession();
-		request.setAttribute("nombreSession", session.getAttribute("usuario"));
-		dispatcher = request.getRequestDispatcher("/views/User-list.jsp");
-		dispatcher.forward(request, response);
+		User user = (User) session.getAttribute(AppConstants.SESSION_USER);
+		
+		Direccion Direccion = DireccionDAO.findById(Long.valueOf(id));
+		request.setAttribute("User", user);
+		request.setAttribute("Direccion", Direccion);
+		request.getRequestDispatcher(AppConstants.CREATE_DIRECCION_PAGE).forward(request, response);
 	}
 
+	
+	
+	
 	
 	private void retrieve(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("usuario");
-		List<Direccion> direccionList = DireccionDAO.findDireccionByUserId(user.getId());
+		User user = (User) session.getAttribute(AppConstants.SESSION_USER);
+		List<Direccion> DireccionList = DireccionDAO.findDireccionByUserId(user.getId());
 
-		request.setAttribute("direccionList", direccionList);
+		// Direccion list is request scoped to avoid storing and synchronizing it in
+		// session for each CRUD operation
+		request.setAttribute("DireccionList", DireccionList);
 
 		request.getRequestDispatcher(AppConstants.HOME_PAGE).forward(request, response);		
 	}
+
+	
 	
 	
 	
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		User user = new User();
 		String id = request.getParameter("id");
-		Direccion direccion = new Direccion();
-		direccion.setDireccion_personal(request.getParameter("direccionpersonal1"));
-		direccion.setDireccion_personal2(request.getParameter("direccionpersonal2"));
-		direccion.setUser((user));
-		
-		//if (request.getParameter("done") != null && request.getParameter("done").equals("on")) {
-				//direccion.setDone(true);
-		//}
-		direccion.setUser((User)request.getSession().getAttribute(AppConstants.SESSION_USER));
+		Direccion Direccion = new Direccion();
+		Direccion.setDireccion_personal(request.getParameter("description"));
 
+		Direccion.setUser((User)request.getSession().getAttribute(AppConstants.SESSION_USER));
+		
 		if (id != null && !id.isEmpty()) {
 			// update
-			direccion.setId(Long.valueOf(id));
-			DireccionDAO.update(direccion);
+			Direccion.setId(Long.valueOf(id));
+			DireccionDAO.update(Direccion);
 		} else {
 			// create
-			DireccionDAO.create(direccion);
+			DireccionDAO.create(Direccion);
 
 		}
 		retrieve(request, response);

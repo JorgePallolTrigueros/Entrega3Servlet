@@ -26,13 +26,14 @@
 	 <a href="/entregam3/UserController">Volver Inicio</a></br>	
 	 
 	 
-	 
-	 						<a href = "${pageContext.request.contextPath}/DireccionController?action=EDIT&id=${direccion.id}">Editar</a> 
+	 						<a href = "${pageContext.request.contextPath}/direccion?action=u&id=${direccion.id}">Edit</a> 
+						| 
+						<a href = "${pageContext.request.contextPath}/direccion?action=d&id=${direccion.id}">Delete</a> 
 						
-						| <a href = "${pageContext.request.contextPath}/DireccionController?action=DELETE&id=${direccion.id}">Borrar</a> 
+						<button class = "btn btn-primary" onclick="window.location.href = 'views/direccion-create.jsp'">Add TODO</button>
 						
 						
-	
+
 	 
 	 
 	 	

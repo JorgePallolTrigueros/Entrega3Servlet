@@ -12,7 +12,7 @@
 	<jsp:include page="navbar.jsp"></jsp:include>
 	
 	<div class = "mt-5 mb-5 container">
-	
+	<h1>Todo detail ${user.id}</h1>
 		<h1>Todo detail ${direccion.id}</h1>
 		<hr/>
 		
@@ -21,21 +21,13 @@
 				<form action = "${pageContext.request.contextPath}/direccion" method="POST">
 				
 					<div class = "form-group">
-						<input type = "text" class = "form-control" name = "description" placeholder = "Enter Name" value = "${todo.description}"/>
+						<input type = "text" class = "form-control" name = "description" placeholder = "Enter Name" value = "${direccion.direccion_personal1}"/>
+						<input type = "text" class = "form-control" name = "description" placeholder = "Enter Name" value = "${direccion.direccion_personal2}"/>
 					</div>
 
-<div class="form-check">
-	<c:choose>
-		<c:when test="${direccion.done}">
-		  <input class="form-check-input" type="checkbox" name="done" id="defaultCheck1" checked>
-		</c:when>
-		<c:otherwise>
-		  <input class="form-check-input" type="checkbox" name="done" id="defaultCheck1">
-		</c:otherwise>
-	</c:choose>
-  <label class="form-check-label" for="defaultCheck1">
-    Done
-  </label>
+
+
+
 </div>
 					<input type = "hidden" name = "id" value = "${direccion.id}"/>
 				
@@ -43,7 +35,7 @@
 				</form>
 			</div>
 		</div>
-		<a href = "${pageContext.request.contextPath}/todos">Back to List</a>
+		<a href = "${pageContext.request.contextPath}/todos">Volver</a>
 	</div>
 	
 <jsp:include page="footer.jsp"></jsp:include>
